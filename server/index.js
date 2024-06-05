@@ -9,7 +9,26 @@ app.use(cors());
 
 const apiRouter = express.Router();
 
-apiRouter.get("/movies/list", (req, res) => {});
+const MOCK = {
+  movies: [
+    {
+      id: "1",
+      title: "Movie 1",
+      description: "Awesome movie",
+      poster: "movie1.png",
+    },
+  ],
+};
+
+apiRouter.get("/movies/list", (req, res) => {
+  fetch("https://freetestapi.com/api/v1/movies")
+    .then((response) => response.json())
+    .then((data) => {
+      res.send({
+        movies: data,
+      });
+    });
+});
 apiRouter.get("/movies/scheduled-list", (req, res) => {});
 apiRouter.get("/movies/:movieId", (req, res) => {});
 apiRouter.put("/movies/:movieId", (req, res) => {});
