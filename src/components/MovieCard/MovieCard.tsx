@@ -27,15 +27,17 @@ const MovieCard = (props: MovieCardProps) => {
         <Stack mt="6" spacing="3">
           <Heading
             size="sm"
+            noOfLines={[1,2]}
             whiteSpace={"nowrap"}
             textOverflow={"ellipsis"}
             overflow={"hidden"}
-            title={props.plot}
+            title={props.title}
           >
             {props.title}
           </Heading>
           <Text
             size={"sm"}
+            noOfLines={[1,2,3]}
             maxHeight={"3em"}
             overflow={"hidden"}
             textOverflow={"ellipsis"}
