@@ -17,7 +17,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 const MovieForm = (props) => {
-  const { movie } = props;
+  const { movie = {}, mode } = props;
   const [currentPoster, setCurrentPoster] = useState(movie.poster);
   const posterRef = useRef(null);
 
@@ -104,27 +104,6 @@ const MovieForm = (props) => {
               {!!errors.description && (errors.description.message as string)}
             </FormErrorMessage>
           </FormControl>
-          {/* <Flex justifyContent={"space-between"} gap={"1em"}>
-            <FormControl isInvalid={!!errors.duration}>
-              <FormLabel htmlFor="duration">Duration(minutes)</FormLabel>
-              <Input
-                type="number"
-                min={0}
-                step={1}
-                id="duration"
-                {...register("duration", {
-                  required: "This is required",
-                  min: {
-                    value: 0,
-                    message: "Only positive",
-                  },
-                })}
-              />
-              <FormErrorMessage>
-                {!!errors.duration && (errors.duration.message as string)}
-              </FormErrorMessage>
-            </FormControl>
-          </Flex> */}
           <Flex gap={"1em"} alignItems={"end"}>
             <FormControl isInvalid={!!errors.poster}>
               <FormLabel htmlFor="poster">Poster(optional)</FormLabel>
@@ -144,7 +123,7 @@ const MovieForm = (props) => {
             </Button>
           </Flex>
           <Button type="submit" isLoading={isSubmitting}>
-            Edit
+            {mode === "new" ? "Create" : "Edit"}
           </Button>
         </form>
       </Box>

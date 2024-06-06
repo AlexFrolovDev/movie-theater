@@ -8,7 +8,11 @@ let ORDERS = [];
 
 const getMovies = () => MOVIES;
 const setMovies = (movies) => (MOVIES = movies);
-const addMovie = (movie) => MOVIES.push(movie);
+const addMovie = (movie) => {
+    console.log('adding: ', movie.id);
+    MOVIES.unshift(movie);
+    console.log('movies count now: ', MOVIES.length);
+};
 const editMovie = (movie) => {
   MOVIES.forEach((_movie, idx) => {
     if (_movie.id === movie.id) {

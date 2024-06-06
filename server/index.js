@@ -2,7 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const { v4: uuid4 } = require("uuid");
 const bodyparser = require("body-parser");
-const { setMovies, getMovies, editMovie, removeMovie } = require("./data");
+const {
+  setMovies,
+  getMovies,
+  editMovie,
+  removeMovie,
+  addMovie,
+} = require("./data");
 
 const PORT = 3030;
 
@@ -33,6 +39,7 @@ const loadMovies = () => {
 };
 
 apiRouter.get("/movies/list", (req, res) => {
+  console.log("movies count: ", getMovies().length);
   res.send({
     movies: getMovies(),
   });
@@ -49,7 +56,11 @@ apiRouter.put("/movies/", (req, res) => {
   editMovie(req.body.movie);
   res.sendStatus(200);
 });
-apiRouter.post("/movies/:movieId", (req, res) => {});
+apiRouter.post("/movies", (req, res) => {
+  addMovie({ ...req.body.movie, id: uuid4() });
+  console.log("movies count: ", getMovies().length);
+  res.sendStatus(200);
+});
 apiRouter.delete("/movies/:movieId", (req, res) => {
   res.send(removeMovie(req.params.movieId));
 });

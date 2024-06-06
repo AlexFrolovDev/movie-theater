@@ -55,11 +55,11 @@ const MoviesList = () => {
 
   return (
     <Flex direction={"column"}>
-      <Flex>
+      {/* <Flex>
         <Button colorScheme="blue" leftIcon={<AddOutlinedIcon />}>
           <Link to={"./add-movie"}>Add Movie</Link>
         </Button>
-      </Flex>
+      </Flex> */}
       <Flex
         gap="1em"
         justifyContent={"center"}
