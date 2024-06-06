@@ -4,6 +4,7 @@ import {
   CardBody,
   CardFooter,
   Divider,
+  Flex,
   Heading,
   IconButton,
   Image,
@@ -15,19 +16,37 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 type MovieCardProps = {
   id: string;
   title: string;
-  description: string;
+  description?: string;
+  plot?: string;
   poster: string;
+  year: string | number;
+  duration?: string | number;
+  runtime?: string | number;
+  onEditClick: (movieId: string) => void;
+  onDeleteClick: (movieId: string) => void;
 };
 
 const MovieCard = (props: MovieCardProps) => {
+  const goToEditPage = () => {
+    props.onEditClick(props.id);
+  };
+  const onDeleteClicked = () => {
+    props.onDeleteClick(props.id);
+  };
+
   return (
     <Card maxW={"sm"} maxWidth={"150px"}>
       <CardBody>
-        <Image onClick={() => console.log("clicked")} src={props.poster} cursor={"pointer"} height={"120px"} />
+        <Image
+          onClick={goToEditPage}
+          src={props.poster}
+          cursor={"pointer"}
+          height={"120px"}
+        />
         <Stack mt="6" spacing="3">
           <Heading
             size="sm"
-            noOfLines={[1,2]}
+            noOfLines={[1, 2]}
             whiteSpace={"nowrap"}
             textOverflow={"ellipsis"}
             overflow={"hidden"}
@@ -35,9 +54,18 @@ const MovieCard = (props: MovieCardProps) => {
           >
             {props.title}
           </Heading>
+          <Flex direction="column">
+            {/* <Text as="b" fontSize={"smaller"}>
+              Date: {new Date().toLocaleDateString()} &nbsp;{" "}
+              {new Date().toLocaleTimeString()}
+            </Text> */}
+            {/* <Text as="b" fontSize={"smaller"}>
+              Duration: {props.runtime}m
+            </Text> */}
+          </Flex>
           <Text
             size={"sm"}
-            noOfLines={[1,2,3]}
+            noOfLines={[1, 2, 3]}
             maxHeight={"3em"}
             overflow={"hidden"}
             textOverflow={"ellipsis"}
@@ -54,6 +82,7 @@ const MovieCard = (props: MovieCardProps) => {
           aria-label="Delete Movie"
           colorScheme="red"
           icon={<DeleteForeverIcon color="error" />}
+          onClick={onDeleteClicked}
         />
       </CardFooter>
     </Card>

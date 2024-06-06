@@ -8,6 +8,8 @@ import Home from "./Home";
 import Admin from "./Admin";
 import Order from "./Order";
 import MoviesList from "./Admin/MoviesList";
+import EditMovie from "./Admin/EditMovie";
+import ScheduleMovie from "./Admin/ScheduleMovie";
 /* 
 const routes = createBrowserRouter([
   {
@@ -52,7 +54,8 @@ const routes = createBrowserRouter(
       <Route path="admin">
         <Route path="" element={<MoviesList />} />
         <Route path="add-movie" element={<div>New Movie</div>} />
-        <Route path="edit-movie/:movieId" element={<div>Edit movie</div>} />
+        <Route path="edit-movie/:movieId" element={<EditMovie />} />
+        <Route path="schedule-movie/:movieId" element={<ScheduleMovie />} />
       </Route>
       <Route path="order" element={<Order />} />
     </Route>
