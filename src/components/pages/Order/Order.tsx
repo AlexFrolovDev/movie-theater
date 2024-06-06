@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
+import { useParams } from "react-router-dom";
 
 const Order = () => {
-  return (
-    <div>Order</div>
-  )
-}
+  const params = useParams();
+  return <div>Order {params.movieId}</div>;
+};
 
-export default Order
+export default Order;

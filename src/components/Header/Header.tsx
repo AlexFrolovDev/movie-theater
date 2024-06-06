@@ -10,6 +10,7 @@ const Header = () => {
       <Flex gap={"1em"} justifyContent={"end"}>
         <HeaderLink color='green' pathname={"/admin/add-movie"} text="Add Movie" />
         <HeaderLink color='green' pathname="/admin" text="Movies List" />
+        <HeaderLink color='green' pathname="/admin/schedule-movie" text="Schedules" />
       </Flex>
     </Flex>
   );

@@ -13,6 +13,6 @@ export const Content = styled(Flex)`
     justify-content: center;
 
     & > div {
-        width: 80%;
+        width: 100%;
     }
 `;

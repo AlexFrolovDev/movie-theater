@@ -28,7 +28,7 @@ type MovieCardProps = {
 
 const MovieCard = (props: MovieCardProps) => {
   const goToEditPage = () => {
-    props.onEditClick(props.id);
+    props?.onEditClick(props.id);
   };
   const onDeleteClicked = () => {
     props.onDeleteClick(props.id);
@@ -55,13 +55,14 @@ const MovieCard = (props: MovieCardProps) => {
             {props.title}
           </Heading>
           <Flex direction="column">
-            {/* <Text as="b" fontSize={"smaller"}>
-              Date: {new Date().toLocaleDateString()} &nbsp;{" "}
-              {new Date().toLocaleTimeString()}
-            </Text> */}
-            {/* <Text as="b" fontSize={"smaller"}>
+            {props.scheduled ? (
+              <Text as="b" fontSize={"smaller"}>
+                {new Date(props.from).toLocaleDateString()} &nbsp; {new Date(props.from).toLocaleTimeString()}
+              </Text>
+            ) : null}
+            <Text as="b" fontSize={"smaller"}>
               Duration: {props.runtime}m
-            </Text> */}
+            </Text>
           </Flex>
           <Text
             size={"sm"}
@@ -77,13 +78,14 @@ const MovieCard = (props: MovieCardProps) => {
       </CardBody>
       <Divider />
       <CardFooter>
-        <IconButton
-          onClick={props.onDelete}
-          aria-label="Delete Movie"
-          colorScheme="red"
-          icon={<DeleteForeverIcon color="error" />}
-          onClick={onDeleteClicked}
-        />
+        {props.disableDelete ? null : (
+          <IconButton
+            aria-label="Delete Movie"
+            colorScheme="red"
+            icon={<DeleteForeverIcon color="error" />}
+            onClick={onDeleteClicked}
+          />
+        )}
       </CardFooter>
     </Card>
   );

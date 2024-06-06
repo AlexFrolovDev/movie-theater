@@ -8,6 +8,9 @@ const {
   editMovie,
   removeMovie,
   addMovie,
+  getScheduled,
+  addScheduled,
+  setScheduled,
 } = require("./data");
 
 const PORT = 3030;
@@ -38,6 +41,24 @@ const loadMovies = () => {
     });
 };
 
+apiRouter.get("/movies/scheduled", (req, res) => {
+  const movies = getMovies();
+  const schedules = getScheduled();
+  res.send(
+    schedules
+      .map((schedule) => {
+        const movie = movies.find((movie) => movie.id === schedule.movieId);
+        return {
+          ...schedule,
+          ...movie,
+        };
+      })
+      /* .filter(
+        (schedule) => new Date(schedule.from).getTime() > new Date().getTime()
+      ) */
+  );
+});
+
 apiRouter.get("/movies/list", (req, res) => {
   console.log("movies count: ", getMovies().length);
   res.send({
@@ -67,6 +88,33 @@ apiRouter.delete("/movies/:movieId", (req, res) => {
 apiRouter.get("/movies/schedule/:movieId", (req, res) => {});
 apiRouter.post("/movies/seat/:movieId/:seatIndex", (req, res) => {});
 
+apiRouter.get("/schedules", (req, res) => {
+  const { movieIds = [], sort } = req.query;
+  const schedules = getScheduled().filter((_schedule) => {
+    return movieIds.length ? movieIds.includes(_schedule.movieId) : true;
+  });
+
+  res.send(schedules);
+});
+apiRouter.post("/schedules", (req, res) => {
+  const { movieId, from, to } = req.body;
+  addScheduled({ movieId, from, to });
+
+  res.send(getScheduled());
+});
+
+apiRouter.get("/schedules/check-availability", (req, res) => {
+  const { from: _from, to: _to } = req.query;
+  const overlaps = getScheduled().some(({ from, to }) => {
+    const startDate = new Date(from);
+    const endDate = new Date(to);
+
+    return (_from > from && _from < end) || (_to > from && _to < end);
+  });
+
+  res.send(!overlaps);
+});
+
 app.use("/api", apiRouter);
 
 app.get("/", (req, res) => {
@@ -75,5 +123,7 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is up on PORT: ${PORT}`);
+  setMovies([]);
+  setScheduled([]);
   loadMovies();
 });
