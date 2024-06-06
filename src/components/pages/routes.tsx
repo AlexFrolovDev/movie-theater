@@ -22,7 +22,7 @@ const routes = createBrowserRouter(
         <Route path="edit-movie/:movieId" element={<EditMovie />} />
         <Route path="schedule-movie" element={<ScheduleMovie />} />
       </Route>
-      <Route path="order-movie/:movieId" element={<Order />} />
+      <Route path="order-movie/:scheduleId" element={<Order />} />
     </Route>
   )
 );

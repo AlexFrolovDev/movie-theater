@@ -83,6 +83,7 @@ const editScheduled = (scheduled) => {
   SCHEDULED.forEach((_scheduled, idx) => {
     if (_scheduled.id === scheduled.id) {
       SCHEDULED[idx] = { ...scheduled };
+      return;
     }
   });
   saveToFile("scheduled");

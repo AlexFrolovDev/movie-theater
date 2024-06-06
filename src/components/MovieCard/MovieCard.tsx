@@ -24,11 +24,13 @@ type MovieCardProps = {
   runtime?: string | number;
   onEditClick: (movieId: string) => void;
   onDeleteClick: (movieId: string) => void;
+  scheduled?: boolean;
+  scheduleId?: string;
 };
 
 const MovieCard = (props: MovieCardProps) => {
   const goToEditPage = () => {
-    props?.onEditClick(props.id);
+    props?.onEditClick(props.scheduleId ? props.scheduleId : props.id);
   };
   const onDeleteClicked = () => {
     props.onDeleteClick(props.id);

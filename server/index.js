@@ -45,18 +45,32 @@ apiRouter.get("/movies/scheduled", (req, res) => {
   const movies = getMovies();
   const schedules = getScheduled();
   res.send(
-    schedules
-      .map((schedule) => {
-        const movie = movies.find((movie) => movie.id === schedule.movieId);
-        return {
-          ...schedule,
-          ...movie,
-        };
-      })
-      /* .filter(
+    schedules.map((schedule) => {
+      const movie = movies.find((movie) => movie.id === schedule.movieId);
+      return {
+        ...schedule,
+        scheduleId: schedule.id,
+        ...movie,
+      };
+    })
+    /* .filter(
         (schedule) => new Date(schedule.from).getTime() > new Date().getTime()
       ) */
   );
+});
+
+apiRouter.get("/movies/scheduled/:id", (req, res) => {
+  console.log(req.params.id);
+  const schedule = getScheduled().find(
+    (schedule) => schedule.id === req.params.id
+  );
+
+  const movie = getMovies().find((movie) => movie.id === schedule.movieId);
+
+  res.send({
+    ...schedule,
+    movie,
+  });
 });
 
 apiRouter.get("/movies/list", (req, res) => {
@@ -98,7 +112,7 @@ apiRouter.get("/schedules", (req, res) => {
 });
 apiRouter.post("/schedules", (req, res) => {
   const { movieId, from, to } = req.body;
-  addScheduled({ movieId, from, to });
+  addScheduled({ movieId, from, to, id: uuid4() });
 
   res.send(getScheduled());
 });
@@ -123,7 +137,5 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is up on PORT: ${PORT}`);
-  setMovies([]);
-  setScheduled([]);
   loadMovies();
 });
