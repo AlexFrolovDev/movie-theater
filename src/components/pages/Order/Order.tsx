@@ -1,9 +1,18 @@
-import React from "react";
+import { Flex } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import SeatsManager from "../../SeatsManager";
 
 const Order = () => {
   const params = useParams();
-  return <div>Order {params.movieId}</div>;
+
+  useEffect(() => {}, []);
+
+  return (
+    <Flex direction={"column"}>
+      <SeatsManager seats={Array(100).fill(0)} />
+    </Flex>
+  );
 };
 
 export default Order;
