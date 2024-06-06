@@ -10,11 +10,15 @@ const AddMovie = () => {
 
   const onSubmit = (movie = {}) => {
     console.log(movie);
-    axios.post(`${API_BASE_URL}/movies`, { movie }).then((response) => {
-      if (response.status === 200) {
-        navigate(-1);
-      }
-    });
+    axios
+      .post(`${API_BASE_URL}/movies`, {
+        movie: { ...movie, plot: movie.description },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          navigate(-1);
+        }
+      });
   };
   return (
     <Flex direction={"column"}>
