@@ -41,7 +41,7 @@ const MoviesList = () => {
       axios
         .delete(`http://localhost:3030/api/movies/${movieId}`)
         .then((response) => {
-          setMovies(response.data.movies);
+          setMovies(response.data);
         })
         .catch((e) => {
           alert("Server error!");

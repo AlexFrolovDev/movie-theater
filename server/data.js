@@ -17,8 +17,8 @@ const editMovie = (movie) => {
     }
   });
 };
-const removeMovie = (movie) =>
-  setMovies(MOVIES.filter((_movie) => _movie.id !== movie.id));
+const removeMovie = (movieId) =>
+  setMovies(MOVIES.filter((_movie) => _movie.id !== movieId));
 
 const setScheduled = (scheduled) => (SCHEDULED = scheduled);
 const addScheduled = (scheduled) => SCHEDULED.push(scheduled);

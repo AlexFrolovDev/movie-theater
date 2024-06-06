@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { v4: uuid4 } = require("uuid");
 const bodyparser = require("body-parser");
-const { setMovies, getMovies, editMovie } = require("./data");
+const { setMovies, getMovies, editMovie, removeMovie } = require("./data");
 
 const PORT = 3030;
 
@@ -51,17 +51,7 @@ apiRouter.put("/movies/", (req, res) => {
 });
 apiRouter.post("/movies/:movieId", (req, res) => {});
 apiRouter.delete("/movies/:movieId", (req, res) => {
-  console.log("deleting: ", req.params.movieId);
-  fetch("https://freetestapi.com/api/v1/movies")
-    .then((response) => response.json())
-    .then((data) => {
-      res.send({
-        movies: data.filter(
-          (movie) => movie.id.toString() !== req.params.movieId.toString()
-        ),
-      });
-    })
-    .catch((error) => res.sendStatus(500));
+  res.send(removeMovie(req.params.movieId));
 });
 apiRouter.get("/movies/schedule/:movieId", (req, res) => {});
 apiRouter.post("/movies/seat/:movieId/:seatIndex", (req, res) => {});
