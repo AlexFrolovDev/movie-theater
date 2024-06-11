@@ -92,6 +92,12 @@ const ScheduleForm = (props) => {
       });
   };
 
+  const deleteSchedule = (id) => {
+    axios.delete(`${API_BASE_URL}/schedules`, {data: { id }}).then((response) => {
+      setSchedules(response.data);
+    });
+  };
+
   const geTdateBlockForSelectedMovie = () => {
     const selectedMovie = getMovieById(getValues("movie"));
 
@@ -239,7 +245,7 @@ const ScheduleForm = (props) => {
                           <Td>
                             <IconButton
                               size={"sm"}
-                              onClick={() => console.log("deleting")}
+                              onClick={() => deleteSchedule(schedule.id)}
                               aria-label="Delete Schedule"
                               colorScheme="red"
                               icon={<DeleteForeverIcon color="error" />}

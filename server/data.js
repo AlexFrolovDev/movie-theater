@@ -49,7 +49,7 @@ const readFromFile = (entity) => {
 
 const getMovies = () => MOVIES;
 const setMovies = (movies) => {
-  MOVIES = movies;
+  MOVIES = readFromFile("movies");
   saveToFile("movies");
 };
 const addMovie = (movie) => {
@@ -88,15 +88,28 @@ const editScheduled = (scheduled) => {
   });
   saveToFile("scheduled");
 };
-const removeScheduled = (scheduled) => {
+const removeScheduled = (id) => {
   setScheduled(
-    SCHEDULED.filter((_scheduled) => _scheduled.id !== scheduled.id)
+    SCHEDULED.filter((_scheduled) => _scheduled.id !== id)
   );
   saveToFile("scheduled");
 };
 
-const setOrders = (orders) => (ORDERS = orders);
-const addOrder = (order) => ORDERS.push(order);
+const setOrders = (orders) => {
+  ORDERS = orders;
+  saveToFile("orders");
+};
+
+const getOrders = () => ORDERS;
+
+const addOrder = (order) => {
+  ORDERS.push(order);
+  saveToFile("orders");
+};
+const removeOrder = (ids = []) => {
+  ORDERS = ORDERS.filter((order) => !ids.includes(order.id));
+  saveToFile("orders");
+};
 
 module.exports = {
   saveToFile,
@@ -112,5 +125,7 @@ module.exports = {
   editScheduled,
   removeScheduled,
   setOrders,
+  getOrders,
   addOrder,
+  removeOrder,
 };
