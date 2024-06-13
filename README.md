@@ -1,3 +1,10 @@
+Requires local installation of MongoDB.
+Create .env file.
+Add field with connection url for Mongo DB, e.g. MONGO_DB_URL='mongodb://localhost:27017/cl_theater'
+
+(Users and roles are not implemented)
+(Not all the data is managed in Mongo for now, part of it is memory. Transfering everything to database right now)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
