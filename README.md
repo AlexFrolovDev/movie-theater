@@ -5,6 +5,12 @@ Add field with connection url for Mongo DB, e.g. MONGO_DB_URL='mongodb://localho
 (Users and roles are not implemented)
 (Not all the data is managed in Mongo for now, part of it is memory. Transfering everything to database right now)
 
+In "server" dir run: 'npm run dev'
+In main dir run: 'npm run dev'
+
+**Not Implemented**
+Seats/Orders are just for seats, with no consideration of user/customer data(id). Just reserve a seat for scheduled movie
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
