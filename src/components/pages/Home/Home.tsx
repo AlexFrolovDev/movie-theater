@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { API_BASE_URL } from "../../../consts";
 import {
   Box,
+  Button,
   Center,
   Flex,
   FormControl,
@@ -62,7 +63,7 @@ const Home = () => {
 
   return (
     <Flex direction={"column"}>
-      <Flex justifyContent={"center"} gap={3} marginTop={"3em"}>
+      <Flex justifyContent={"center"} alignItems={'end'} gap={3} marginTop={"3em"}>
         <Box>
           <FormControl>
             <FormLabel>Order</FormLabel>
@@ -94,6 +95,7 @@ const Home = () => {
             />
           </FormControl>
         </Box>
+        <Button>Reset</Button>
       </Flex>
       <Flex
         gap="1em"

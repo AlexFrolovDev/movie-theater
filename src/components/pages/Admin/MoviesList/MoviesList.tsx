@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../../consts";
 
 const MoviesList = () => {
   const [movies, setMovies] = useState([]);
@@ -39,7 +40,7 @@ const MoviesList = () => {
     (movieId: string) => {
       setWorking(true);
       axios
-        .delete(`http://localhost:3030/api/movies/${movieId}`)
+        .delete(`${API_BASE_URL}/movies/${movieId}`)
         .then((response) => {
           setMovies(response.data);
         })
@@ -66,7 +67,7 @@ const MoviesList = () => {
         {movies.map((movie) => {
           return (
             <MovieCard
-              key={movie.id}
+              key={movie._id}
               {...movie}
               onEditClick={onMovieEditClick}
               onDeleteClick={onMovieDeleteClick}

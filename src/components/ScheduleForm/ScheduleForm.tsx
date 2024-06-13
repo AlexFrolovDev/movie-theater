@@ -53,14 +53,16 @@ const ScheduleForm = (props) => {
     props?.onSubmit({ ...movie, ...values });
   };
 
-  const getMovieById = (id) => movies.find((_movie) => _movie.id === id);
+  const getMovieById = (id) => movies.find((_movie) => _movie._id === id);
   const getSchedulesForMovie = (movieId) =>
-    schedules.filter((schedule) => schedule.movieId === movieId);
+    schedules.filter((schedule) => schedule.movie === movieId);
 
   const checkScheduleAvailability = (from, to) => {
     setLoading(true);
     return axios
-      .get(`${API_BASE_URL}/schedules/check-availability`, { from, to })
+      .get(`${API_BASE_URL}/schedules/check-availability`, {
+        params: { from, to },
+      })
       .then((response) => {
         return response.data;
       })
@@ -73,29 +75,40 @@ const ScheduleForm = (props) => {
   const addSchedule = () => {
     const selectedMovie = getMovieById(getValues("movie"));
     const from = new Date(watchedFromDate)?.getTime();
-    const to = from + selectedMovie?.runtime * 60000;
+    const to = from + selectedMovie?.duration * 60000;
 
     setLoading(true);
-    axios
-      .post(`${API_BASE_URL}/schedules`, {
-        movieId: getValues("movie"),
-        from,
-        to,
-      })
-      .then((response) => {
-        setSchedules(response.data);
-        return response.data;
-      })
-      .finally(() => {
+    checkScheduleAvailability(from, to).then((res) => {
+      if (res === false) {
         setLoading(false);
-        return false;
-      });
+        alert("Time overlap !");
+        return;
+      }
+
+      console.log(from, to)
+      axios
+        .post(`${API_BASE_URL}/schedules`, {
+          movieId: getValues("movie"),
+          from,
+          to,
+        })
+        .then((response) => {
+          setSchedules(response.data);
+          return response.data;
+        })
+        .finally(() => {
+          setLoading(false);
+          return false;
+        });
+    });
   };
 
   const deleteSchedule = (id) => {
-    axios.delete(`${API_BASE_URL}/schedules`, {data: { id }}).then((response) => {
-      setSchedules(response.data);
-    });
+    axios
+      .delete(`${API_BASE_URL}/schedules`, { data: { id } })
+      .then((response) => {
+        setSchedules(response.data);
+      });
   };
 
   const geTdateBlockForSelectedMovie = () => {
@@ -153,16 +166,18 @@ const ScheduleForm = (props) => {
   useEffect(() => {
     if (watchedFromDate) {
       const selectedMovie = getMovieById(getValues("movie"));
-      const selectedStarTdate = new Date(watchedFromDate)?.getTime();
-      const endDate = selectedStarTdate + selectedMovie?.runtime * 60000;
+      const selectedStartDate = new Date(watchedFromDate)?.getTime();
+      const endDate = selectedStartDate + selectedMovie?.duration * 60000;
+
+      console.log(selectedMovie, endDate)
 
       setValue("toDate", new Date(endDate).toLocaleString());
 
-      checkScheduleAvailability(selectedStarTdate, endDate).then((res) => {
+      checkScheduleAvailability(selectedStartDate, endDate).then((res) => {
         console.log(res);
-        if (res.data === false) {
+        if (res === false) {
           alert("Schedule time overtlap !");
-          setError("fromDate", { message: "Schedule overlap !" });
+          //setError("fromDate", { message: "Schedule overlap !" });
         }
       });
     } else {
@@ -170,7 +185,7 @@ const ScheduleForm = (props) => {
     }
   }, [watchedFromDate]);
 
-  const isAddScheduleEnabled = getValues("movie") && watchedFromDate;
+  const isAddScheduleEnabled = getValues("movie") && !!watchedFromDate;
 
   return (
     <Container paddingTop={"3em"} maxWidth={"80%"}>
@@ -199,7 +214,7 @@ const ScheduleForm = (props) => {
               >
                 {movies.map((movie) => {
                   return (
-                    <option key={movie.id} value={movie.id}>
+                    <option key={movie._id} value={movie._id}>
                       {movie.title}
                     </option>
                   );
@@ -231,21 +246,21 @@ const ScheduleForm = (props) => {
                   </Thead>
                   <Tbody>
                     {schedules.map((schedule) => {
-                      const movie = getMovieById(schedule.movieId);
+                      const movie = getMovieById(schedule.movie);
                       if (!movie) return;
                       return (
-                        <Tr>
+                        <Tr key={schedule._id}>
                           <Td>
                             <Checkbox />
                           </Td>
                           <Td>{movie.title}</Td>
                           <Td>{new Date(schedule.from).toLocaleString()}</Td>
                           <Td>{new Date(schedule.to).toLocaleString()}</Td>
-                          <Td>{movie.runtime}(min)</Td>
+                          <Td>{movie.duration}(min)</Td>
                           <Td>
                             <IconButton
                               size={"sm"}
-                              onClick={() => deleteSchedule(schedule.id)}
+                              onClick={() => deleteSchedule(schedule._id)}
                               aria-label="Delete Schedule"
                               colorScheme="red"
                               icon={<DeleteForeverIcon color="error" />}
@@ -263,7 +278,7 @@ const ScheduleForm = (props) => {
               type="submit"
               isLoading={isSubmitting}
               onClick={addSchedule}
-              disabled={!isAddScheduleEnabled}
+              isDisabled={!isAddScheduleEnabled}
             >
               Add
             </Button>

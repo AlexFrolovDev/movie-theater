@@ -5,12 +5,6 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../../consts";
 
 const ScheduleMovie = () => {
-
-  useEffect(() => {
-    axios.get(`${API_BASE_URL}/movies/list`).then((response) => {
-      setMovies(response.data.movies);
-    });
-  }, []);
   return (
     <Flex direction={"column"}>
       <ChakraProvider>

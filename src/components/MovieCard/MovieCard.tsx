@@ -30,10 +30,10 @@ type MovieCardProps = {
 
 const MovieCard = (props: MovieCardProps) => {
   const goToEditPage = () => {
-    props?.onEditClick(props.scheduleId ? props.scheduleId : props.id);
+    props?.onEditClick(props.scheduleId ? props.scheduleId : props._id);
   };
   const onDeleteClicked = () => {
-    props.onDeleteClick(props.id);
+    props.onDeleteClick(props._id);
   };
 
   return (

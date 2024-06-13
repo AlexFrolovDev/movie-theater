@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { v4: uuid4 } = require("uuid");
 const bodyparser = require("body-parser");
+const mongoose = require("mongoose");
+require("dotenv").config();
 const {
   setMovies,
   getMovies,
@@ -19,8 +21,15 @@ const {
   removeScheduled,
   removeOrder,
 } = require("./data");
+const { MovieModel, ScheduleModel } = require("./models");
 
 const PORT = 3030;
+const dbUrl = process.env.MONGO_DB_URL;
+
+mongoose
+  .connect(dbUrl)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("MongoDB connection error:", error));
 
 const app = express();
 
@@ -29,22 +38,27 @@ app.use(bodyparser.json({ limit: "50mb" }));
 
 const apiRouter = express.Router();
 
-const MOCK = {
-  movies: [
-    {
-      id: "1",
-      title: "Movie 1",
-      description: "Awesome movie",
-      poster: "movie1.png",
-    },
-  ],
-};
-
 const loadMovies = () => {
   fetch("https://freetestapi.com/api/v1/movies")
     .then((response) => response.json())
-    .then((data) => {
+    .then(async (data) => {
       setMovies(data.map((movie) => ({ ...movie, id: uuid4() })));
+      const dbMovies = MovieModel.find({});
+      if (dbMovies.length === 0) {
+        data.forEach((movie) => {
+          const newMovie = new MovieModel({
+            title: movie.title,
+            plot: movie.plot,
+            poster: movie.poster,
+            duration: movie.runtime,
+          });
+          newMovie.save().then((response) => {
+            console.log(response);
+          });
+        });
+      }
+      setOrders([]);
+      setScheduled([]);
     });
 };
 
@@ -53,14 +67,18 @@ apiRouter.get("/movies/scheduled", (req, res) => {
   console.log(order, from, to);
   const movies = getMovies();
   const schedules = getScheduled();
-  let filtered = schedules.map((schedule) => {
-    const movie = movies.find((movie) => movie.id === schedule.movieId);
-    return {
-      ...schedule,
-      scheduleId: schedule.id,
-      ...movie,
-    };
-  });
+  let filtered = schedules
+    .filter((schedule) => {
+      return !!movies.find((movie) => movie.id === schedule.movieId);
+    })
+    .map((schedule) => {
+      const movie = movies.find((movie) => movie.id === schedule.movieId);
+      return {
+        ...schedule,
+        scheduleId: schedule.id,
+        ...movie,
+      };
+    });
 
   filtered.sort((a, b) => {
     if (a.from > b.from) return 1;
@@ -69,16 +87,16 @@ apiRouter.get("/movies/scheduled", (req, res) => {
     return 0;
   });
 
-  if(order === 'desc'){
+  if (order === "desc") {
     filtered = filtered.reverse();
   }
 
-  if(to){
+  if (to) {
     const fromTs = new Date(from).getTime();
     const toTs = new Date(to).getTime();
     filtered = filtered.filter((item) => {
-        return item.from >= fromTs && item.from < toTs;
-    })
+      return item.from >= fromTs && item.from < toTs;
+    });
   }
 
   res.send(filtered);
@@ -106,10 +124,11 @@ apiRouter.get("/movies/scheduled/:id", (req, res) => {
   });
 });
 
-apiRouter.get("/movies/list", (req, res) => {
+apiRouter.get("/movies/list", async (req, res) => {
   console.log("movies count: ", getMovies().length);
+  const movies = await MovieModel.find({});
   res.send({
-    movies: getMovies(),
+    movies,
   });
 });
 apiRouter.get("/movies/scheduled-list", (req, res) => {});
@@ -126,57 +145,86 @@ apiRouter.put("/movies/", (req, res) => {
 });
 apiRouter.post("/movies", (req, res) => {
   addMovie({ ...req.body.movie, id: uuid4() });
-  console.log("movies count: ", getMovies().length);
+  const { movie } = req.body;
+  const newMovie = new MovieModel({
+    title: movie.title,
+    plot: movie.plot,
+    poster: movie.poster,
+    duration: movie.runtime,
+  });
+  newMovie.save().then((response) => {
+    console.log(response);
+  });
   res.sendStatus(200);
 });
-apiRouter.delete("/movies/:movieId", (req, res) => {
-  res.send(removeMovie(req.params.movieId));
+apiRouter.delete("/movies/:movieId", async (req, res) => {
+  await MovieModel.deleteOne({ _id: req.params.movieId });
+  const movies = await MovieModel.find({});
+  res.send(movies);
 });
 apiRouter.get("/movies/schedule/:movieId", (req, res) => {});
 apiRouter.post("/movies/seat/:movieId/:seatIndex", (req, res) => {});
 
-apiRouter.get("/schedules", (req, res) => {
+apiRouter.get("/schedules", async (req, res) => {
   const { movieIds = [], sort } = req.query;
+  /* const movies = getMovies();
   const schedules = getScheduled().filter((_schedule) => {
+    if (!movies.find((movie) => movie.id === _schedule.movieId)) return false;
+
     return movieIds.length ? movieIds.includes(_schedule.movieId) : true;
-  });
+  }); */
+
+  const schedules = await ScheduleModel.find({});
 
   res.send(schedules);
 });
-apiRouter.post("/schedules", (req, res) => {
+apiRouter.post("/schedules", async (req, res) => {
   const { movieId, from, to } = req.body;
-  addScheduled({
+  /* addScheduled({
     movieId,
     from,
     to,
     id: uuid4(),
     seats: new Array(100).fill(true),
-  });
+  }); */
 
-  res.send(getScheduled());
+  const newSchedule = new ScheduleModel({
+    from,
+    to,
+    seats: new Array(100).fill(true),
+    movie: movieId,
+  });
+  await newSchedule.save();
+  const schedules = await ScheduleModel.find({});
+
+  res.send(schedules);
 });
 
-apiRouter.delete("/schedules", (req, res) => {
+apiRouter.delete("/schedules", async (req, res) => {
   const { id } = req.body;
-  removeScheduled(id);
+  /* removeScheduled(id);
   const orders = getOrders()
     .filter((order) => order.scheduleId === id)
     .map((order) => order.id);
-  removeOrder(orders);
+  removeOrder(orders); */
+  await ScheduleModel.deleteOne({ _id: id });
+  const schedules = await ScheduleModel.find({});
 
-  res.send(getScheduled());
+  res.send(schedules);
 });
 
-apiRouter.get("/schedules/check-availability", (req, res) => {
-  const { from: _from, to: _to } = req.query;
-  const overlaps = getScheduled().some(({ from, to }) => {
-    const startDate = new Date(from);
-    const endDate = new Date(to);
+apiRouter.get("/schedules/check-availability", async (req, res) => {
+  const { from, to } = req.query;
+  const schedules = await ScheduleModel.find({});
+  const overlaps =
+    schedules.length > 0
+      ? schedules.some((s) => {
+          console.log(from, to, s.from, s.to);
+          return (from < s.from && to < s.from) || (from > s.to && to > s.to);
+        })
+      : true;
 
-    return (_from > from && _from < end) || (_to > from && _to < end);
-  });
-
-  res.send(!overlaps);
+  res.send(overlaps);
 });
 
 apiRouter.post("/order", (req, res) => {
@@ -211,8 +259,4 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is up on PORT: ${PORT}`);
   loadMovies();
-  const schedules = readFromFile("scheduled");
-  setScheduled(schedules);
-  const orders = readFromFile("orders");
-  setOrders(orders);
 });

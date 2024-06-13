@@ -14,7 +14,7 @@ const EditMovie = () => {
     console.log(movie);
     axios.put(`${API_BASE_URL}/movies`, { movie }).then((response) => {
       if (response.status === 200) {
-        navigate(-1);
+        navigate('/admin');
       }
     });
   };

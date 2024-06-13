@@ -35,7 +35,7 @@ const MovieForm = (props) => {
   const onSubmit = () => {
     const values = getValues();
 
-    props?.onSubmit({ ...movie, ...values });
+    props?.onSubmit({ ...movie, ...values, runtime: parseInt(values['duration']) });
   };
 
   const watchedImage = watch("poster");
@@ -65,7 +65,7 @@ const MovieForm = (props) => {
   return (
     <Container paddingTop={"3em"}>
       <Center>
-        <Heading>Editing Movie</Heading>
+        <Heading>{mode === 'new' ? 'New Movie' : 'Editing Movie'}</Heading>
       </Center>
       <Box>
         <Flex justifyContent={"center"}>
@@ -86,6 +86,26 @@ const MovieForm = (props) => {
             />
             <FormErrorMessage>
               {!!errors.title && (errors.title.message as string)}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!!errors.duration}>
+            <FormLabel htmlFor="duration">Duration(minutes)</FormLabel>
+            <Input
+              id="duration"
+              type='number'
+              min={1}
+              placeholder="Duration(minutes)"
+              {...register("duration", {
+                required: "This is required",
+                validate: {
+                    min: (value) => {
+                        return value <= 0 ? 'Must be atleast 1 minute' : undefined
+                    }
+                }
+              })}
+            />
+            <FormErrorMessage>
+              {!!errors.duration && (errors.duration.message as string)}
             </FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.description}>

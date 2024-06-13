@@ -49,7 +49,7 @@ const readFromFile = (entity) => {
 
 const getMovies = () => MOVIES;
 const setMovies = (movies) => {
-  MOVIES = readFromFile("movies");
+  MOVIES = movies;
   saveToFile("movies");
 };
 const addMovie = (movie) => {
@@ -66,8 +66,11 @@ const editMovie = (movie) => {
   saveToFile("movies");
 };
 const removeMovie = (movieId) => {
-  setMovies(MOVIES.filter((_movie) => _movie.id !== movieId));
+    const movies = MOVIES.filter((_movie) => _movie.id !== movieId);
+  setMovies(movies);
   saveToFile("movies");
+
+  return movies;
 };
 
 const getScheduled = () => SCHEDULED;
