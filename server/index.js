@@ -113,6 +113,7 @@ apiRouter.post("/movies", async (req, res) => {
 
 apiRouter.delete("/movies/:movieId", async (req, res) => {
   await MovieModel.deleteOne({ _id: req.params.movieId });
+  await ScheduleModel.deleteMany({ movie: req.params.movieId}); // delete also all related scheduled movies
   const movies = await MovieModel.find({});
   res.send(movies);
 });
@@ -173,6 +174,11 @@ apiRouter.post("/order", async (req, res) => {
 });
 
 app.use("/api", apiRouter);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send(err.message);
+});
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));

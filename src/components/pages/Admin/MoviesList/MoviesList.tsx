@@ -7,7 +7,9 @@ import {
   Center,
   Container,
   Flex,
+  FormLabel,
   Heading,
+  Input,
   Text,
 } from "@chakra-ui/react";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -17,7 +19,12 @@ import { API_BASE_URL } from "../../../../consts";
 const MoviesList = () => {
   const [movies, setMovies] = useState([]);
   const [working, setWorking] = useState(false);
+  const [filter, setFilter] = useState();
   const navigate = useNavigate();
+
+  const onFilterChange = (e) => {
+    setFilter(e.target.value.toLowerCase());
+  };
 
   useEffect(() => {
     setWorking(true);
@@ -54,8 +61,14 @@ const MoviesList = () => {
     [movies]
   );
 
+  const filteredList = movies.filter((m) => m.title.toLowerCase().includes(filter))
+
   return (
-    <Flex direction={"column"}>
+    <Flex direction={"column"} alignItems={'center'}>
+      <Center mt={5}>
+        <FormLabel for='filter-input'>Filter:</FormLabel>
+        <Input id='filter-input' size='sm' onChange={onFilterChange} value={filter} />
+      </Center>
       <Flex
         gap="1em"
         justifyContent={"center"}
@@ -64,7 +77,7 @@ const MoviesList = () => {
         maxHeight={"100%"}
         padding={"1em"}
       >
-        {movies.map((movie) => {
+        {filteredList.map((movie) => {
           return (
             <MovieCard
               key={movie._id}
