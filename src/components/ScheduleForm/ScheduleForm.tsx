@@ -85,7 +85,6 @@ const ScheduleForm = (props) => {
         return;
       }
 
-      console.log(from, to)
       axios
         .post(`${API_BASE_URL}/schedules`, {
           movieId: getValues("movie"),
@@ -125,7 +124,7 @@ const ScheduleForm = (props) => {
               required: "This is required",
               validate: {
                 notPast: (value) => {
-                  console.log(value);
+                  
                 },
               },
             })}
@@ -169,12 +168,9 @@ const ScheduleForm = (props) => {
       const selectedStartDate = new Date(watchedFromDate)?.getTime();
       const endDate = selectedStartDate + selectedMovie?.duration * 60000;
 
-      console.log(selectedMovie, endDate)
-
       setValue("toDate", new Date(endDate).toLocaleString());
 
       checkScheduleAvailability(selectedStartDate, endDate).then((res) => {
-        console.log(res);
         if (res === false) {
           alert("Schedule time overtlap !");
           //setError("fromDate", { message: "Schedule overlap !" });

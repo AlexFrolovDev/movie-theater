@@ -9,7 +9,6 @@ const AddMovie = () => {
   const navigate = useNavigate();
 
   const onSubmit = (movie = {}) => {
-    console.log(movie);
     axios
       .post(`${API_BASE_URL}/movies`, {
         movie: { ...movie, plot: movie.description },

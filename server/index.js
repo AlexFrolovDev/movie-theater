@@ -1,26 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const { v4: uuid4 } = require("uuid");
 const bodyparser = require("body-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const {
-  setMovies,
-  getMovies,
-  editMovie,
-  removeMovie,
-  addMovie,
-  getScheduled,
-  addScheduled,
-  setScheduled,
-  readFromFile,
-  editScheduled,
-  setOrders,
-  addOrder,
-  getOrders,
-  removeScheduled,
-  removeOrder,
-} = require("./data");
 const { MovieModel, ScheduleModel } = require("./models");
 
 const PORT = 3030;
@@ -51,9 +33,7 @@ const loadMovies = () => {
             poster: movie.poster,
             duration: movie.runtime,
           });
-          newMovie.save().then((response) => {
-            console.log(response);
-          });
+          newMovie.save();
         });
       }
     });
@@ -172,7 +152,6 @@ apiRouter.get("/schedules/check-availability", async (req, res) => {
   const overlaps =
     schedules.length > 0
       ? schedules.some((s) => {
-          console.log(from, to, s.from, s.to);
           return (from < s.from && to < s.from) || (from > s.to && to > s.to);
         })
       : true;

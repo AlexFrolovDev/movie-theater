@@ -59,7 +59,6 @@ const Home = () => {
     loadMoviesList();
   }, [order, fromDate, toDate]);
 
-  console.log(movies)
 
   return (
     <Flex direction={"column"}>

@@ -11,7 +11,6 @@ const EditMovie = () => {
   const navigate = useNavigate();
 
   const onSubmit = (movie = {}) => {
-    console.log(movie);
     axios.put(`${API_BASE_URL}/movies`, { movie }).then((response) => {
       if (response.status === 200) {
         navigate('/admin');
