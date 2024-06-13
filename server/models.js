@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-module.exports.MovieSchema = new Schema({
+const MovieSchema = new Schema({
   id: Schema.Types.ObjectId,
   title: {
     type: String,
@@ -23,7 +23,7 @@ module.exports.MovieSchema = new Schema({
 
 module.exports.MovieModel = mongoose.model("Movie", MovieSchema);
 
-module.exports.ScheduleSchema = new Schema({
+const ScheduleSchema = new Schema({
   id: Schema.Types.ObjectId,
   movie: {
     type: Schema.Types.ObjectId,
@@ -36,7 +36,7 @@ module.exports.ScheduleSchema = new Schema({
 
 module.exports.ScheduleModel = mongoose.model("Schedule", ScheduleSchema);
 
-module.exports.OrderSchema = new Schema({
+const OrderSchema = new Schema({
   id: Schema.Types.ObjectId,
   schedule: {
     type: Schema.Types.ObjectId,

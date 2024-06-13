@@ -21,7 +21,7 @@ const Order = () => {
     setLoading(true);
     axios
       .post(`${API_BASE_URL}/order`, {
-        scheduleId: schedule.id,
+        scheduleId: schedule._id,
         seatIdx: selectedSeat,
       })
       .then(() => {

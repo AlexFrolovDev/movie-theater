@@ -14,7 +14,7 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 type MovieCardProps = {
-  id: string;
+  _id: string;
   title: string;
   description?: string;
   plot?: string;
@@ -26,9 +26,11 @@ type MovieCardProps = {
   onDeleteClick: (movieId: string) => void;
   scheduled?: boolean;
   scheduleId?: string;
+  movie?: any;
 };
 
 const MovieCard = (props: MovieCardProps) => {
+  const movie = props.movie?._id ? props.movie : props;
   const goToEditPage = () => {
     props?.onEditClick(props.scheduleId ? props.scheduleId : props._id);
   };
@@ -52,7 +54,7 @@ const MovieCard = (props: MovieCardProps) => {
             whiteSpace={"nowrap"}
             textOverflow={"ellipsis"}
             overflow={"hidden"}
-            title={props.title}
+            title={movie.title}
           >
             {props.title}
           </Heading>
@@ -63,7 +65,7 @@ const MovieCard = (props: MovieCardProps) => {
               </Text>
             ) : null}
             <Text as="b" fontSize={"smaller"}>
-              Duration: {props.runtime}m
+              Duration: {props.duration}m
             </Text>
           </Flex>
           <Text

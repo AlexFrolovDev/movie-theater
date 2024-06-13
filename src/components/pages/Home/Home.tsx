@@ -27,8 +27,8 @@ const Home = () => {
       .get(`${API_BASE_URL}/movies/scheduled`, {
         params: {
           order,
-          from: new Date(fromDate),
-          to: toDate ? new Date(toDate) : undefined,
+          from: new Date(fromDate).getTime(),
+          to: toDate ? new Date(toDate).getTime() : undefined,
         },
       })
       .then((response) => {
@@ -48,22 +48,27 @@ const Home = () => {
   }
 
   useEffect(() => {
-
     return () => {
-        mounted.current = true;
-    }
+      mounted.current = true;
+    };
   }, []);
 
   useEffect(() => {
-    if(!mounted.current) return;
+    if (!mounted.current) return;
 
     loadMoviesList();
   }, [order, fromDate, toDate]);
 
+  console.log(movies)
 
   return (
     <Flex direction={"column"}>
-      <Flex justifyContent={"center"} alignItems={'end'} gap={3} marginTop={"3em"}>
+      <Flex
+        justifyContent={"center"}
+        alignItems={"end"}
+        gap={3}
+        marginTop={"3em"}
+      >
         <Box>
           <FormControl>
             <FormLabel>Order</FormLabel>
@@ -112,6 +117,7 @@ const Home = () => {
               scheduled
               key={movie.id}
               disableDelete
+              {...movie.movie}
               {...movie}
             />
           );
